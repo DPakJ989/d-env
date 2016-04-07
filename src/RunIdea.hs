@@ -25,7 +25,7 @@ exportEnvVars j i gwArgs = do
     echo "Setting environment variables.."
     export "JAVA_HOME" (getJavaPath j)
     export "IDEA_HOME" (getIdeaPath i)
-    echo $ "export PATH=$PATH:" <> (getIdeaPath i) <> "/bin"
+    echo $ "export PATH=$PATH:" <> getIdeaPath i <> "/bin"
     envVars <- env
     printVar "JAVA_HOME" envVars
     printVar "IDEA_HOME" envVars
@@ -33,7 +33,7 @@ exportEnvVars j i gwArgs = do
     dir <- pwd
     cd dir
     exitCode <- proc "./gwb" gwArgs stdin
-    putStrLn . show $ exitCode
+    print exitCode
     where
       printVar :: Text -> [(Text, Text)] -> IO ()
       printVar a l = echo $ case lookup a l of

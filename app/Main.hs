@@ -13,13 +13,14 @@ data CommandLineArgs = CommandLineArgs
 main :: IO ()
 main = do
   args <- execParser (info commandLineArgsParser idm) 
-  validate args
+  let(jv, iv, ga) = validate args
+  exportEnvVars jv iv ga
 
-validate :: CommandLineArgs -> IO () 
-validate args
-    | maybeJavaVersion args == Nothing    = putStrLn "Error: Invalid Java version specified"
-    | maybeIdeaVersion args == Nothing    = putStrLn "Error: Invalid Idea version specified"
-    | otherwise                           = exportEnvVars (fromJust . maybeJavaVersion $ args) (fromJust . maybeIdeaVersion $ args) (gwbArgs $ args)
+validate :: CommandLineArgs -> (JavaVersion, IdeaVersion, [Text]) 
+validate args = case (maybeJavaVersion args, maybeIdeaVersion args, gwbArgs args) of
+    (Nothing, _, _)         -> error "Invalid Java version specified"
+    (_, Nothing, _)         -> error "Invalid Idea version specified"
+    (Just jv, Just iv, ga)  -> (jv, iv, ga)
 
 javaVersionParser :: Parser (Maybe JavaVersion)
 javaVersionParser = parseJavaVersion <$> (strOption . long $ "java")
