@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Lib
+module RunIdea
     ( exportEnvVars,
       JavaVersion(Java7, Java8),
       IdeaVersion(Idea14, Idea15)
