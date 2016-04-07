@@ -1,42 +1,43 @@
 module Main where
 
-import Lib as L
+import Lib 
 import Options.Applicative
+import Data.Maybe
 
 data CommandLineArgs = CommandLineArgs 
-    { maybeJavaVersion :: Maybe L.JavaVersion
-    , maybeIdeaVersion :: Maybe L.IdeaVersion 
+    { maybeJavaVersion :: Maybe JavaVersion
+    , maybeIdeaVersion :: Maybe IdeaVersion 
     , gwbArgs     :: [String] }
 
 main :: IO ()
-main = execParser (info commandLineArgs idm) >>= validate
+main = execParser (info commandLineArgsParser idm) >>= validate
 
-validate :: Main.CommandLineArgs -> IO () 
+validate :: CommandLineArgs -> IO () 
 validate args
     | maybeJavaVersion args == Nothing    = putStrLn ("Error: Invalid Java version specified")
     | maybeIdeaVersion args == Nothing    = putStrLn ("Error: Invalid Idea version specified")
-    | otherwise                           = putStrLn ("Setting environment variables ...")
+    | otherwise                           = exportEnvVars (fromJust . maybeJavaVersion $ args) (fromJust . maybeIdeaVersion $ args) (gwbArgs $ args)
 
-javaVersion :: Parser (Maybe L.JavaVersion)
-javaVersion = parseJavaVersion <$> (strOption . long $ "java")
+javaVersionParser :: Parser (Maybe JavaVersion)
+javaVersionParser = parseJavaVersion <$> (strOption . long $ "java")
   where
-    parseJavaVersion :: String -> Maybe L.JavaVersion
+    parseJavaVersion :: String -> Maybe JavaVersion
     parseJavaVersion s = case s of 
-      "8" -> Just L.Java8
-      "7" -> Just L.Java7
+      "8" -> Just Java8
+      "7" -> Just Java7
       _   -> Nothing
 
-ideaVersion :: Parser (Maybe L.IdeaVersion)
-ideaVersion = parseIdeaVersion <$> (strOption . long $ "idea")
+ideaVersionParser :: Parser (Maybe IdeaVersion)
+ideaVersionParser = parseIdeaVersion <$> (strOption . long $ "idea")
   where 
-    parseIdeaVersion :: String -> Maybe L.IdeaVersion
+    parseIdeaVersion :: String -> Maybe IdeaVersion
     parseIdeaVersion s = case s of 
-      "14" -> Just L.Idea14
-      "15" -> Just L.Idea15
+      "14" -> Just Idea14
+      "15" -> Just Idea15
       _    -> Nothing
 
-gwbCommands :: Parser [String]
-gwbCommands = some (strArgument . idm $ "gwbArgs")
+gwbArgsParser :: Parser [String]
+gwbArgsParser = some (strArgument . idm $ "gwbArgs")
 
-commandLineArgs :: Parser Main.CommandLineArgs
-commandLineArgs = Main.CommandLineArgs <$> Main.javaVersion <*> Main.ideaVersion <*> gwbCommands
+commandLineArgsParser :: Parser Main.CommandLineArgs
+commandLineArgsParser = CommandLineArgs <$> javaVersionParser <*> ideaVersionParser <*> gwbArgsParser
