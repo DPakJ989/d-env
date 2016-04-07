@@ -22,7 +22,9 @@ data IdeaVersion
     deriving (Eq, Ord)
 
 exportEnvVars :: JavaVersion -> IdeaVersion -> [String] -> IO ()
-exportEnvVars j i gwArgs = (putStrLn . show . getJavaPath) j >> (putStrLn . show . getIdeaPath) i  
+exportEnvVars j i gwArgs = do
+  putStrLn . show . getJavaPath $ j 
+  putStrLn . show . getIdeaPath $ i  
 
 getJavaPath :: JavaVersion -> FilePath
 getJavaPath Java7 = "/usr/lib/jvm/java-7-oracle"

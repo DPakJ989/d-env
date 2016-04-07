@@ -10,7 +10,9 @@ data CommandLineArgs = CommandLineArgs
     , gwbArgs     :: [String] }
 
 main :: IO ()
-main = execParser (info commandLineArgsParser idm) >>= validate
+main = do
+  args <- execParser (info commandLineArgsParser idm) 
+  validate args
 
 validate :: CommandLineArgs -> IO () 
 validate args
