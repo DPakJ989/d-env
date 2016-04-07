@@ -18,7 +18,6 @@ library
   exposed-modules:     Lib
   build-depends:       base >= 4.7 && < 5
                      , turtle
-                     , containers
   default-language:    Haskell2010
 
 executable d-env-exe
@@ -41,4 +40,4 @@ test-suite d-env-test
 
 source-repository head
   type:     git
-  location: https://github.com/githubuser/d-env
+  location: https://github.com/DPakJ989/d-env
