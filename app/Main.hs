@@ -3,11 +3,12 @@ module Main where
 import RunIdea 
 import Options.Applicative
 import Data.Maybe
+import Data.Text
 
 data CommandLineArgs = CommandLineArgs 
     { maybeJavaVersion :: Maybe JavaVersion
     , maybeIdeaVersion :: Maybe IdeaVersion 
-    , gwbArgs     :: [String] }
+    , gwbArgs     :: [Text] }
 
 main :: IO ()
 main = do
@@ -16,8 +17,8 @@ main = do
 
 validate :: CommandLineArgs -> IO () 
 validate args
-    | maybeJavaVersion args == Nothing    = putStrLn ("Error: Invalid Java version specified")
-    | maybeIdeaVersion args == Nothing    = putStrLn ("Error: Invalid Idea version specified")
+    | maybeJavaVersion args == Nothing    = putStrLn "Error: Invalid Java version specified"
+    | maybeIdeaVersion args == Nothing    = putStrLn "Error: Invalid Idea version specified"
     | otherwise                           = exportEnvVars (fromJust . maybeJavaVersion $ args) (fromJust . maybeIdeaVersion $ args) (gwbArgs $ args)
 
 javaVersionParser :: Parser (Maybe JavaVersion)
@@ -38,8 +39,8 @@ ideaVersionParser = parseIdeaVersion <$> (strOption . long $ "idea")
       "15" -> Just Idea15
       _    -> Nothing
 
-gwbArgsParser :: Parser [String]
-gwbArgsParser = some (strArgument . idm $ "gwbArgs")
+gwbArgsParser :: Parser [Text]
+gwbArgsParser = some $ pack <$> strArgument idm
 
 commandLineArgsParser :: Parser Main.CommandLineArgs
 commandLineArgsParser = CommandLineArgs <$> javaVersionParser <*> ideaVersionParser <*> gwbArgsParser

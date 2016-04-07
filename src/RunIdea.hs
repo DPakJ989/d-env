@@ -20,7 +20,7 @@ data IdeaVersion
     | Idea15
     deriving (Eq, Ord)
 
-exportEnvVars :: JavaVersion -> IdeaVersion -> [String] -> IO ()
+exportEnvVars :: JavaVersion -> IdeaVersion -> [Text] -> IO ()
 exportEnvVars j i gwArgs = do
     echo "Setting environment variables.."
     export "JAVA_HOME" (getJavaPath j)
@@ -29,6 +29,7 @@ exportEnvVars j i gwArgs = do
     printVar "JAVA_HOME" envVars
     printVar "IDEA_HOME" envVars
     printVar "PATH" envVars
+    stdout $ inproc "gwb" gwArgs stdin
     where
       printVar :: Text -> [(Text, Text)] -> IO ()
       printVar a l = echo $ case lookup a l of
