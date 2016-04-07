@@ -1,6 +1,6 @@
 module Main where
 
-import Lib 
+import RunIdea 
 import Options.Applicative
 import Data.Maybe
 
