@@ -1,13 +1,21 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Lib
-    ( exportEnvVars
+    ( exportEnvVars,
+      CommandLineArgs(CommandLineArgs, javaVersion, ideaVersion, gwbArgs),
+      JavaVersion(Java7, Java8),
+      IdeaVersion(Idea14, Idea15)
     ) where
 
 import Turtle
 import Data.Map as Map
 import Data.Maybe
 import Prelude hiding (FilePath)
+
+data CommandLineArgs = CommandLineArgs
+    { javaVersion :: JavaVersion
+    , ideaVersion :: IdeaVersion 
+    , gwbArgs     :: [String] }
 
 data JavaVersion 
     = Java7 
@@ -19,8 +27,8 @@ data IdeaVersion
     | Idea15
     deriving (Eq, Ord)
 
-exportEnvVars :: IO ()
-exportEnvVars = putStrLn . show . fromJust . Map.lookup Java8 $ javaPathMap  
+exportEnvVars :: CommandLineArgs -> IO ()
+exportEnvVars c = putStrLn . show . fromJust . Map.lookup (javaVersion c) $ javaPathMap  
 
 javaPathMap :: Map JavaVersion FilePath
 javaPathMap = Map.fromList 
