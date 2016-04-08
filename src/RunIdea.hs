@@ -13,18 +13,16 @@ import Prelude hiding (FilePath)
 data JavaVersion 
     = Java7 
     | Java8
-    deriving (Eq, Ord)
 
 data IdeaVersion
     = Idea14
     | Idea15
-    deriving (Eq, Ord)
 
 exportEnvVars :: JavaVersion -> IdeaVersion -> [Text] -> IO ()
 exportEnvVars j i gwArgs = do
     echo "Setting environment variables.."
-    export "JAVA_HOME" (getJavaPath j)
-    export "IDEA_HOME" (getIdeaPath i)
+    export "JAVA_HOME" $ getJavaPath j
+    export "IDEA_HOME" $ getIdeaPath i
     echo $ "export PATH=$PATH:" <> getIdeaPath i <> "/bin"
     envVars <- env
     printVar "JAVA_HOME" envVars
@@ -32,7 +30,7 @@ exportEnvVars j i gwArgs = do
     printVar "PATH" envVars
     dir <- pwd
     cd dir
-    exitCode <- proc "./gwb" gwArgs stdin
+    exitCode <- proc "./gwb" gwArgs empty
     print exitCode
     where
       printVar :: Text -> [(Text, Text)] -> IO ()

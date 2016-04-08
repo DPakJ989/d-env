@@ -12,7 +12,7 @@ data CommandLineArgs = CommandLineArgs
 
 main :: IO ()
 main = do
-  args <- execParser (info commandLineArgsParser idm) 
+  args <- execParser $ info commandLineArgsParser idm 
   let(jv, iv, ga) = validate args
   exportEnvVars jv iv ga
 
