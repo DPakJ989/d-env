@@ -10,8 +10,8 @@ import Turtle
 import Data.Maybe
 import Prelude hiding (FilePath)
 
-data JavaVersion 
-    = Java7 
+data JavaVersion
+    = Java7
     | Java8
 
 data IdeaVersion
@@ -44,5 +44,5 @@ getJavaPath Java8 = "/usr/lib/jvm/java-8-oracle"
 
 getIdeaPath :: IdeaVersion -> Text
 getIdeaPath Idea14 = "/opt/idea14/idea-IU-141.3056.4"
-getIdeaPath Idea15 = "/opt/idea15/idea-IU-143.2332.3"
+getIdeaPath Idea15 = "/opt/idea15/idea-IU-143.2370.31"
 
